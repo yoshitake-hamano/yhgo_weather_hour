@@ -89,12 +89,19 @@ https://github.com/yoshitake-hamano/yhgo_weather_hour
 
 * Electric Design
 
-.image images/sketch.png 0 350
+.image images/sketch.png 0 500
 
 - Raspberry PiのGNDとWS2812BのVSSを接続
 - Raspberry PiのGPIO18とWS2812BのDINを接続
 - Raspberry Piの3.3VとWS2812BのVDDを接続
 - 実は、WS2812Bは3.5Vから5.3Vなのでスペック外なので注意
+
+* LEDチカチカ例
+
+* 
+
+ここからはLEDチカチカを例にあげ、
+Raspberry piからWS2812Bを制御する方法を説明します。
 
 * Install rpi_ws281x
 
@@ -115,7 +122,7 @@ https://github.com/yoshitake-hamano/yhgo_weather_hour
 .code example/main.go /START CONST OMIT/,/END CONST OMIT/
 
 - GPIO 18番を信号線として使う
-- LEDは3個数珠つなぎ
+- LED 3個を数珠つなぎ
 
 * LEDチカチカ
 
