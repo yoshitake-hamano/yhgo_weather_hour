@@ -1,0 +1,155 @@
+Raspberry pi x Golang
+
+2018/3/3
+
+
+浜野義丈
+
+
+https://github.com/yoshitake-hamano/yhgo_weather_hour
+
+
+* 
+
+.image images/rain.jpg 0 700
+
+会社の帰り、ビルを出たときに雨に気づいたことはありませんか？
+
+* 
+
+.image images/weather_hour_1.jpg 0 800
+
+* 
+
+.image images/weather_hour_2.jpg 0 800
+
+* 
+
+.image images/weather_hour_3.jpg 0 800
+
+* 
+
+.image images/weather_hour_4.jpg 0 800
+
+* 
+
+.image images/weather_hour_5.jpg 0 800
+
+* 
+
+.image images/weather_hour_6.jpg 0 800
+
+* 
+
+.image images/weather_hour_7.jpg 0 800
+
+* 
+
+アイデアが出てから、この作品を1週間で作りました
+
+* 
+
+アイデアが出てから、この作品を1週間で作りました
+
+ちょっとしたエレキ知識を必要としますが
+
+* 
+
+アイデアが出てから、この作品を1週間で作りました
+
+ちょっとしたエレキ知識を必要としますが
+たった200行のGo言語で動かしています
+
+* 
+
+.image images/weather_hour_3.jpg 0 800
+
+* Software Design
+
+.image images/component_diagram.png 0 800
+
+# @startuml
+# node "Raspberry pi" {
+#   [WeatherHour] --> [jgarff/rpi_ws281x]
+#   [WeatherHour] --> [net/http]
+# }
+# database "OPEN WEATHER MAP" {
+#   interface "WebAPI" as WebAPICurrent
+#   interface "WebAPI" as WebAPI3Hour
+#   WebAPICurrent - [Current weather data]
+#   WebAPI3Hour - [3 hour forecase]
+# }
+# WebAPICurrent <-- [net/http]
+# WebAPI3Hour <-- [net/http]
+# [jgarff/rpi_ws281x] -> [NeoPixel]
+# @enduml
+
+- net/httpでWebAPIを叩く
+- jgarff/rpi_ws281xでNeoPixelを制御
+
+* Electric Design
+
+.image images/sketch.png 0 350
+
+- Raspberry PiのGNDとWS2812BのVSSを接続
+- Raspberry PiのGPIO18とWS2812BのDINを接続
+- Raspberry Piの3.3VとWS2812BのVDDを接続
+- 実は、WS2812Bは3.5Vから5.3Vなのでスペック外なので注意
+
+* Install rpi_ws281x
+
+ $ sudo apt-get update
+ $ sudo apt-get install -y build-essential python-dev git scons swig
+ $ git clone https://github.com/jgarff/rpi_ws281x.git
+ $ cd rpi_ws281x
+ $ scons
+ $ sudo cp ws2811.h pwm.h rpihw.h /usr/local/include/
+ $ sudo cp libws2811.a /usr/local/lib/
+ $ go get github.com/jgarff/rpi_ws281x/golang/ws2811
+
+- jgarff/rpi_ws281xはRaspberry piからWS2812Bを制御するライブラリ
+- jgarff/rpi_ws281xはPythonとGoに対応
+
+* LEDチカチカ
+
+.code example/main.go /START CONST OMIT/,/END CONST OMIT/
+
+- GPIO 18番を信号線として使う
+- LEDは3個数珠つなぎ
+
+* LEDチカチカ
+
+.code example/main.go /START EXECUTE OMIT/,/END EXECUTE OMIT/
+
+- SetLed関数を呼び出したタイミングでは、LEDに変化なし
+- Render関数を呼び出したタイミングで、LEDに変化あり
+
+* 感想
+
+- Raspberry pi界隈ではPythonが最大勢力
+- しかし、Raspberry piにGo言語向けのライブラリもある
+- Raspberry piとGo言語は相性が良い
+- IoTのモック作成に向いているかも
+
+* 
+
+Go言語の使い道を
+　　みんなでシェアしましょう！
+
+.image images/yeah.png
+
+* 部品
+
+- Raspberry pi関連
+SDカード・Micro USBケーブル・マウス・キーボード・HDMIケーブルなど
+
+- Neo Pixel WS2812B単品
+http://akizukidenshi.com/catalog/g/gM-08414/
+
+- Neo Pixel テープ型（動作するはず）
+https://www.switch-science.com/catalog/1398/
+
+* リンク
+
+.link http://oedocowboys.sakura.ne.jp/blog/blog/2017/11/12/neo-pixels-in-golang-on-rpi2/ 組み込みProgrammerのチラシの裏 > Neo Pixels in Golang on RPi2
+.link https://github.com/ten-team/weather_hour_golang Github > ten > weather_hour_golang
